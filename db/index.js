@@ -1,38 +1,44 @@
 const mongoose = require('mongoose');
-const config=require('../config/db_connect');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 
-const DB_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/digital_feed_generator_db';
-//const DB_URI = config.remote_production;
+const DB_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/movies_db';
 
-function connect() {
-  return new Promise((resolve, reject) => {
 
-    if (process.env.NODE_ENV === 'test') {
-      const Mockgoose = require('mockgoose').Mockgoose;
-      const mockgoose = new Mockgoose(mongoose);
 
-      mockgoose.prepareStorage()
-        .then(() => {
-          mongoose.connect(DB_URI,
-            { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true ,useFindAndModify:false })
-            .then((res, err) => {
-              if (err) return reject(err);
-              resolve();
-            })
-        })
-    } else {
-        mongoose.connect(DB_URI,
-          { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true,useFindAndModify:false })
-          .then((res, err) => {
-            if (err) return reject(err);
-            resolve(res);
-          })
+const mongooseOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+};
+
+async function connect() {
+  if (process.env.NODE_ENV === 'test') {
+    const mongod = await MongoMemoryServer.create();
+    const uri = mongod.getUri();
+    await mongoose.connect(uri, mongooseOptions);
+
+  } else {
+    await mongoose.connect(DB_URI, mongooseOptions)
+      .catch(error => console.log(error));
+  }
+}
+
+async function close() {
+  if (process.env.NODE_ENV === 'test') {
+    await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
+    await mongod.stop();
+  }
+}
+
+async function clearDatabase() {
+  if (process.env.NODE_ENV === 'test') {
+    const collections = mongoose.connection.collections;
+    for (const key in collections) {
+      const collection = collections[key];
+      await collection.deleteMany();
     }
-  });
+
+  }
 }
 
-function close() {
-  return mongoose.disconnect();
-}
-
-module.exports = { connect, close };
+module.exports = { connect, close, clearDatabase };

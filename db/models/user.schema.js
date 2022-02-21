@@ -45,7 +45,7 @@ const UserSchema = new Schema({
     }
 }, {
     timestamps: true
-})
+});
 
 UserSchema.plugin(beautifyUnique);
 
@@ -63,14 +63,14 @@ UserSchema.pre('save', function (next) {
 
 function validateEmail(email) {
     var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    return re.test(email)
-};
+    return re.test(email);
+}
 
 
 UserSchema.methods.toJSON = function () {
     var obj = this.toObject();
     delete obj.password;
     return obj;
-}
+};
 
 module.exports=mongoose.model('User',UserSchema);
