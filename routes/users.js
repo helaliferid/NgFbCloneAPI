@@ -8,9 +8,10 @@ router.get('/', function(req, res, next) {
   res.json({user:'Ok'});
 });
 
-router.post('/register',async (req,rep)=>{
-  const {... _user}=req.body;
+router.post('/register',async (req,res,next)=>{
+  const  _user=req.body;
   try {
+    debugger
     let response = await userService.register(_user);
     res.json(response);
   } catch (error) {

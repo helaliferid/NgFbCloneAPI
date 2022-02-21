@@ -4,7 +4,7 @@
 const register = (User) => async (user) =>{
    const _user= new User(user);
    try {
-       const result = await user.save();
+       const result = await _user.save();
        if(result){
            return({
                status:'success',
