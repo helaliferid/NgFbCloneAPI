@@ -1,4 +1,8 @@
-
+const {
+    generateMeAToken,
+    comparePassword
+} = require('../helpers/auth.helpers')
+const ROLES = require('../helpers/user.validations').roles;
 
 
 const register = (User) => async (user) =>{
@@ -23,7 +27,34 @@ const register = (User) => async (user) =>{
 
 
 const authenticate = User => async (email,password)=>{
-
+    try {
+        const user = await User.findOne({
+            email: email
+        });
+        if (comparePassword(password, user.password)) {
+            const token = generateMeAToken(user);
+            return ({
+                status: "success",
+                message: "user authenticated succssfully!!!",
+                payload: {
+                    user: user.toJSON(),
+                    token: token
+                }
+            });
+        } else {
+            return ({
+                status: "error",
+                message: "Invalid email or password!!!",
+                payload: null
+            })
+        }
+    } catch (error) {
+        return ({
+            status: "error",
+            message: "user can't authenticate",
+            payload: null
+        });
+    }
 }
 
 const getUserById  = User => async (id)=>{

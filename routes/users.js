@@ -17,6 +17,18 @@ router.post('/register',async (req,res,next)=>{
   } catch (error) {
     next(error)
   }
-})
+});
+
+router.post('/authenticate', async function (req, res, next) {
+    try {
+      let {email,password} = req.body;
+      res.json(await userService.authenticate(email, password));
+    } catch (error) {
+      next(error)
+    }
+  
+});
+
+
 
 module.exports = router;
