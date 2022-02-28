@@ -11,7 +11,6 @@ router.get('/', function(req, res, next) {
 router.post('/register',async (req,res,next)=>{
   const  _user=req.body;
   try {
-    debugger
     let response = await userService.register(_user);
     res.json(response);
   } catch (error) {

@@ -2,19 +2,19 @@ var jwt = require('jsonwebtoken');
 var secretKey =process.env.SECRET_KEY;
 module.exports = {
     validateUser: async function (req, res, next) {
-        await jwt.verify(req.headers['x-access-token'], secretKey, function (err, decoded) {
-            if (err) {
+        await jwt.verify(req.headers['x-access-token'], secretKey, function (err, user) {
+           if (err) {
                 res.json({
                     status: "error",
                     message: err.message,
                     data: null
-                });
+                }) ;
             } else {
                 // add user id to request
                 req.body.logged={
-                    userid : decoded.id,
-                    email : decoded.email,
-                    isGranted :decoded.isGranted
+                    userid : user.id,
+                    email : user.email,
+                    isGranted :user.isGranted
                 }
                 next();
             }
