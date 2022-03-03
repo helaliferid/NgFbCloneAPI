@@ -8,7 +8,7 @@ function generateMeAToken(user) {
         id: user._id,
         email: user.email,
     }, secretKey, {
-        expiresIn: '365d'
+        expiresIn: '24h'
     });
 }
 

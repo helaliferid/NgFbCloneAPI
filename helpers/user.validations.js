@@ -6,8 +6,8 @@ module.exports = {
            if (err) {
                 res.json({
                     status: "error",
-                    message: err.message,
-                    data: null
+                    message: 'User not authenticated',
+                    payload: null
                 }) ;
             } else {
                 // add user id to request

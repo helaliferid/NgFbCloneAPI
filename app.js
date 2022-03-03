@@ -1,10 +1,10 @@
 const createError = require('http-errors');
-const express = require('express')
+const express = require('express');
 const path = require('path');
 const logger = require('morgan');const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const movieRouter = require('./routes/movie');
-const cors = require('cors')
+const cors = require('cors');
 
 
 const app = express();
